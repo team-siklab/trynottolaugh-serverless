@@ -1,0 +1,41 @@
+---
+Resources:
+  DynamoDBRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ${self:custom.appshortname}-appsync-dynamodb-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - appsync.amazonaws.com
+      Policies:
+        - PolicyName: ${self:custom.appshortname}-graphql-dynamodb-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:BatchGetItem
+                  - dynamodb:BatchWriteItem
+                Resource:
+                  - Fn::GetAtt:
+                    - PlayersTable
+                    - Arn
+                  # - Fn::Join:
+                  #   - ':'
+                  #   -
+                  #     - 'arn:aws:dynamodb'
+                  #     - Ref: 'AWS::Region'
+                  #     - Ref: 'AWS::AccountId'
+                  #     - 'table/*'

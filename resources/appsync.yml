@@ -1,0 +1,28 @@
+---
+Resources:
+  GraphQLApi:
+    Type: 'AWS::AppSync::GraphQLApi'
+    Properties:
+      Name: Try Not to Laugh Challenge - ${self:provider.stage}
+      AuthenticationType: AMAZON_COGNITO_USER_POOLS
+      UserPoolConfig:
+        UserPoolId:
+          Ref: UserPoolClient
+        AwsRegion: ${self:provider.region}
+        DefaultAction: ALLOW
+
+Outputs:
+  GraphQLApiARN:
+    Description: The ARN of the AppSync GraphQL endpoint.
+    Value: 
+      Ref: GraphQLApi
+  
+  GraphQLApiID:
+    Description: The App ID of the AppSync GraphQL endpoint.
+    Value: 
+      Fn::GetAtt: GraphQLApi.ApiId
+
+  GraphQLApiEndpoint:
+    Description: The URL for the AppSync GraphQL endpoint.
+    Value: 
+      Fn::GetAtt: GraphQLApi.GraphQLUrl

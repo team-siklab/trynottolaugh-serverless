@@ -1,0 +1,36 @@
+---
+Resources:
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Description: A Cognito user pool for authenticating users.
+    Properties:
+      UserPoolName: ${self:custom.appshortname}-user-pool
+      Schema:
+        - Name: name 
+          AttributeDataType: String
+          Mutable: true
+          Required: true
+        - Name: email
+          AttributeDataType: String
+          Mutable: false
+          Required: true
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Description: App Client used by AWS AppSync
+    Properties:
+      ClientName: ${self:custom.appshortname}-appsync-client
+      GenerateSecret: false
+      UserPoolId:
+        Ref: UserPool
+
+Outputs:
+  CognitoUserPoolId:
+    Description: The Pool ID of the Cognito User Pool
+    Value:
+      Ref: UserPool
+
+  CognitoUserPoolClientId:
+    Description: The Client ID for AWS AppSync Auth
+    Value:
+      Ref: UserPoolClient

@@ -1,0 +1,22 @@
+---
+Resources:
+  PlayersTable:
+    Type: AWS::DynamoDB::Table
+    Description: Data store for players
+    Properties:
+      TableName: ${self:custom.appshortname}-players-table
+      AttributeDefinitions:
+        - AttributeName: PlayerId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PlayerId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+Outputs:
+  PlayersTableName:
+    Description: The name of the Players DynamoDB Table
+    Value:
+      Ref: PlayersTable
