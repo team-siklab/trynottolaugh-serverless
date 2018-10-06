@@ -1,0 +1,31 @@
+{
+  "name": "nabiki",
+  "version": "1.0.0",
+  "description": "Serverless component to the **Try not to Laugh Challenge**",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Richard Neil ILagan <ilagan@amazon.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "aws-sdk": "2.320.0",
+    "babel-core": "6.26.3",
+    "babel-loader": "8.0.2",
+    "babel-plugin-transform-runtime": "6.23.0",
+    "babel-polyfill": "6.26.0",
+    "babel-preset-env": "1.7.0",
+    "dynamodb-data-types": "3.0.1",
+    "eslint": "5.6.0",
+    "eslint-config-standard": "12.0.0",
+    "eslint-plugin-import": "2.14.0",
+    "eslint-plugin-node": "7.0.1",
+    "eslint-plugin-promise": "4.0.1",
+    "eslint-plugin-standard": "4.0.0",
+    "serverless-plugin-include-dependencies": "3.1.1",
+    "serverless-webpack": "5.2.0",
+    "webpack": "4.19.1",
+    "webpack-node-externals": "1.7.2"
+  }
+}
