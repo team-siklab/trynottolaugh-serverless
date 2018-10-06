@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - npm install -g serverless
+
+  pre_build:
+    commands:
+      - npm install
+    
+  build:
+    commands:
+      - npm test
+
+  post_build:
+    commands:
+      - sls deploy --stage production
