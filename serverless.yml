@@ -17,6 +17,14 @@ custom:
   appname: try-not-to-laugh-challenge
   appshortname: tntlc-${self:provider.stage}
 
+functions:
+  getPhotoScore:
+    handler: functions/get-photo-score.handler
+    events:
+      s3:
+        bucket: ${self:custom.appshortname}-photobucket
+        event: s3:ObjectCreated:*
+
 package:
   individually: true
   exclude:
