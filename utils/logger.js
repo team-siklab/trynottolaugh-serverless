@@ -12,4 +12,4 @@ const logger = createLogger({
   ]
 })
 
-exports = logger
+module.exports = logger

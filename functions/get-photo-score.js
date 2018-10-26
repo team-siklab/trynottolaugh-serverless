@@ -1,8 +1,7 @@
-const logger = require('../utils/logger')
+const logger = require('../utils/logger.js')
 
 exports.handler = (event, context, callback) => {
-
-  logger.debug(':: [get-photo-score] start.')
+  // logger.debug(':: [get-photo-score] start.')
 
   callback(null, {
     statusCode: 200,
