@@ -18,6 +18,8 @@ provider:
     DDB_PHOTOSCORES:
       Ref: PhotoScoresTable
 
+    REKOG_MINIMUM_FACE_SIZE: 0.25
+
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -33,7 +35,7 @@ custom:
 
 functions:
   getPhotoScore:
-    handler: functions/get-photo-score.handler
+    handler: functions/get-photo-score/index.handler
     events:
       - s3:
           bucket: ${self:custom.appshortname}-photobucket
