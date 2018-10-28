@@ -15,8 +15,46 @@ Resources:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
 
+  PhotoScoresTable:
+    Type: AWS::DynamoDB::Table
+    Description: Scores of individual photos played in the game
+    Properties:
+      TableName: ${self:custom.appshortname}-photoscores-table
+      AttributeDefinitions:
+        - AttributeName: GameId
+          AttributeType: S
+        - AttributeName: PlayerId
+          AttributeType: S
+        - AttributeName: Timestamp
+          AttributeType: S
+
+      KeySchema:
+        - AttributeName: GameId
+          KeyType: HASH
+        - AttributeName: Timestamp
+          KeyType: RANGE
+
+      LocalSecondaryIndexes:
+        - IndexName: PID
+          KeySchema:
+            - AttributeName: GameId
+              KeyType: HASH
+            - AttributeName: PlayerId
+              KeyType: RANGE
+          Projection:
+            ProjectionType: KEYS_ONLY
+
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
 Outputs:
   PlayersTableName:
     Description: The name of the Players DynamoDB Table
     Value:
       Ref: PlayersTable
+
+  PhotoScoresTableName:
+    Description: The name of the PhotoScores DynamoDB Table
+    Value:
+      Ref: PhotoScoresTable

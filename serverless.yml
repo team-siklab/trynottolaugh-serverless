@@ -13,6 +13,11 @@ provider:
   environment:
     TARGET_REGION: ${self:provider.region}
 
+    DDB_PLAYERS:
+      Ref: PlayersTable
+    DDB_PHOTOSCORES:
+      Ref: PhotoScoresTable
+
 custom:
   appname: try-not-to-laugh-challenge
   appshortname: tntlc-${self:provider.stage}
