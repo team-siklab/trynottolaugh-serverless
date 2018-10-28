@@ -42,7 +42,7 @@
 const logger = require('../utils/logger.js')
 
 exports.handler = (event, context, callback) => {
-  logger.debug(':: [get-photo-score] start.')
+  logger.start('get-photo-score')
 
   const { s3 } = event.Records[0]
   logger.debug(`:: [get-photo-score] S3 object key is "${s3.object.key}".`)
