@@ -1,4 +1,5 @@
 const ENV = require('../utils/env')
+const logger = require('../utils/logger')
 
 /**
  * Calculates the proportional size of a bounded face in an image,
@@ -29,6 +30,9 @@ exports.sortFaces = (faces) => {
  * @param {object} face - A FaceDetail object, as returned by the Rekognition service.
  */
 exports.calculateScore = (face) => {
+  logger.debug(':: Calculating score ...')
+  logger.debug(JSON.stringify(face))
+
   const { Emotions } = face
   const emoScore = Emotions.reduce((a, emotion) => {
     const value = emotion.Confidence
@@ -38,6 +42,7 @@ exports.calculateScore = (face) => {
   }, 0)
 
   // :: ---
+  logger.debug(`:: Score calculated: [${emoScore}]`)
   return emoScore
 }
 
@@ -46,11 +51,15 @@ exports.calculateScore = (face) => {
  *
  * @param {object} face - Enriched FaceDetail object.
  */
-exports.reduceRecord = ({ s3, score }) => {
+exports.reduceRecord = (face) => {
+  logger.debug(':: Reducing face record to DDB payload ...')
+  logger.debug(JSON.stringify(face))
+
+  const { s3, score } = face
   const [ gameid, objectkey ] = s3.object.key.split('/')
   const [ playerid, timestamp ] = objectkey.split('.')[0].split('_')
 
-  return {
+  const payload = {
     GameId: gameid,
     PlayerId: playerid,
     Timestamp: timestamp,
@@ -60,4 +69,9 @@ exports.reduceRecord = ({ s3, score }) => {
       Key: s3.object.key
     }
   }
+
+  logger.debug(':: Payload created.')
+  logger.debug(JSON.stringify(payload))
+
+  return payload
 }

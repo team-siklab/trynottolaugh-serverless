@@ -2,6 +2,7 @@ require('../utils/aws-init')
 
 const logger = require('../utils/logger.js')
 const { getSentiment } = require('../utils/rekog')
+const { saveScore } = require('../utils/ddb')
 const { calculateScore, getFaceSize, reduceRecord, sortFaces } = require('./helpers')
 
 const { REKOG_MINIMUM_FACE_SIZE } = require('../utils/env')
@@ -91,6 +92,7 @@ exports.handler = (event, _, callback) => {
     .then(getLargestFace)
     .then(face => ({ score: calculateScore(face), s3, ...face }))
     .then(reduceRecord)
+    .then(saveScore)
     .then(face => {
       logger.debug(`:: [get-photo-score] Processing finished.`)
       logger.debug(JSON.stringify(face))

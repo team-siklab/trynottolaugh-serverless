@@ -4,7 +4,13 @@ const slsw = require('serverless-webpack')
 
 // :: ---
 
-// const externsOptions = {}
+// const externsOptions = {
+//   whitelist: [
+//     'winston',
+//     'logform',
+//     'colors/safe'
+//   ]
+// }
 
 module.exports = {
   entry: slsw.lib.entries,
@@ -16,6 +22,7 @@ module.exports = {
   performance: {
     hints: false
   },
+  // externals: [externs(externsOptions)],
   module: {
     rules: [
       {
