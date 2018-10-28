@@ -18,6 +18,15 @@ provider:
     DDB_PHOTOSCORES:
       Ref: PhotoScoresTable
 
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rekognition:*
+        - s3:*
+        - dynamodb:*
+      Resource:
+        - '*'
+
 custom:
   appname: try-not-to-laugh-challenge
   appshortname: tntlc-${self:provider.stage}

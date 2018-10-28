@@ -39,19 +39,32 @@
 }
 ----- */
 
-const logger = require('../utils/logger.js')
+require('../utils/aws-init')
 
-exports.handler = (event, context, callback) => {
+const logger = require('../utils/logger.js')
+const { getSentiment } = require('../utils/rekog')
+
+exports.handler = (event, _, callback) => {
   logger.start('get-photo-score')
 
   const { s3 } = event.Records[0]
   logger.debug(`:: [get-photo-score] S3 object key is "${s3.object.key}".`)
 
-  callback(null, {
-    statusCode: 200,
-    body: JSON.stringify({}),
-    headers: {
-      'Access-Control-Allow-Origins': '*'
-    }
-  })
+  getSentiment(s3)
+    .then(data => {
+      logger.debug(`:: [get-photo-score] Rekognition results received.`)
+
+      callback(null, {
+        statusCode: 200,
+        body: JSON.stringify({}),
+        headers: {
+          // :: TODO determine if this is actually required
+          'Access-Control-Allow-Origins': '*'
+        }
+      })
+    })
+    .catch(err => {
+      logger.error(`:: [get-photo-score] Error encountered while trying to get sentiment from Rekognition.`)
+      callback(err)
+    })
 }
