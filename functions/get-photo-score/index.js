@@ -2,7 +2,7 @@ require('../utils/aws-init')
 
 const logger = require('../utils/logger.js')
 const { getSentiment } = require('../utils/rekog')
-const { calculateScore, getFaceSize, sortFaces } = require('./helpers')
+const { calculateScore, getFaceSize, reduceRecord, sortFaces } = require('./helpers')
 
 const { REKOG_MINIMUM_FACE_SIZE } = require('../utils/env')
 
@@ -51,44 +51,46 @@ const MAXIMUM_SCORE_FACE = {
 }
 
 // :: ---
+
+/**
+ * Gets the largest face from a Rekognition detectFaces response.
+ * If there is no face, or if the largest face is not big enough,
+ * the default face is passed back.
+ *
+ * @param {array} faces - The FaceDetails array from a Rekognition response payload.
+ */
+function getLargestFace (faces) {
+  // :: if there are no faces in the list, then use the default face
+  if (faces.length <= 0) {
+    logger.warn(':: No face found --- using default face.')
+    return MAXIMUM_SCORE_FACE
+  }
+
+  // :: if face is too small, use the default
+  const facesize = getFaceSize(faces[0])
+  logger.debug(`:: Face size is ${facesize}. Threshold is at ${REKOG_MINIMUM_FACE_SIZE}.`)
+  if (facesize <= REKOG_MINIMUM_FACE_SIZE) {
+    logger.warn(':: Face is too small --- using default face.')
+    return MAXIMUM_SCORE_FACE
+  }
+
+  // :: else ---
+  return faces[0]
+}
+
+// :: ---
 //
 exports.handler = (event, _, callback) => {
   logger.start('get-photo-score')
-  logger.debug(`:: [get-photo-score] Face size threshold is ${REKOG_MINIMUM_FACE_SIZE}.`)
 
   const { s3 } = event.Records[0]
   logger.debug(`:: [get-photo-score] S3 object key is "${s3.object.key}".`)
 
   getSentiment(s3)
-    .then(faces => sortFaces(faces))
-    .then(faces => {
-      logger.debug(`:: [get-photo-score] Rekognition results received.`)
-
-      // :: we only want one face, ideally the biggest
-      //    if we can't find a face, then we put one with maximum score values as penalty
-      if (faces.length <= 0) {
-        logger.info(':: [get-photo-score] No face found --- using default face.')
-        return MAXIMUM_SCORE_FACE
-      }
-
-      const facesize = getFaceSize(faces[0])
-      logger.debug(`:: [get-photo-score] Face size is ${facesize}.`)
-
-      if (facesize <= REKOG_MINIMUM_FACE_SIZE) {
-        logger.info(':: [get-photo-score] Face is not big enough --- using default face.')
-        return MAXIMUM_SCORE_FACE
-      }
-
-      // :: else
-      return faces[0]
-    })
-    .then(face => {
-      // :: enrich the data
-      face.s3 = s3
-      face.score = calculateScore(face)
-
-      return face
-    })
+    .then(sortFaces)
+    .then(getLargestFace)
+    .then(face => ({ score: calculateScore(face), s3, ...face }))
+    .then(reduceRecord)
     .then(face => {
       logger.debug(`:: [get-photo-score] Processing finished.`)
       logger.debug(JSON.stringify(face))

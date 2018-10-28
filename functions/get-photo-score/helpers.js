@@ -38,6 +38,26 @@ exports.calculateScore = (face) => {
   }, 0)
 
   // :: ---
-
   return emoScore
+}
+
+/**
+ * Reduces an enriched FaceDetail object into the payload for saving in a DynamoDB table.
+ *
+ * @param {object} face - Enriched FaceDetail object.
+ */
+exports.reduceRecord = ({ s3, score }) => {
+  const [ gameid, objectkey ] = s3.object.key.split('/')
+  const [ playerid, timestamp ] = objectkey.split('.')[0].split('_')
+
+  return {
+    GameId: gameid,
+    PlayerId: playerid,
+    Timestamp: timestamp,
+    Score: score,
+    S3: {
+      Bucket: s3.bucket.name,
+      Key: s3.object.key
+    }
+  }
 }
