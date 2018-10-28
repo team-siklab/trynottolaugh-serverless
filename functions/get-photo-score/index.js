@@ -2,7 +2,7 @@ require('../utils/aws-init')
 
 const logger = require('../utils/logger.js')
 const { getSentiment } = require('../utils/rekog')
-const { getFaceSize, sortFaces } = require('./helpers')
+const { calculateScore, getFaceSize, sortFaces } = require('./helpers')
 
 const { REKOG_MINIMUM_FACE_SIZE } = require('../utils/env')
 
@@ -72,7 +72,6 @@ exports.handler = (event, _, callback) => {
       }
 
       const facesize = getFaceSize(faces[0])
-
       logger.debug(`:: [get-photo-score] Face size is ${facesize}.`)
 
       if (facesize <= REKOG_MINIMUM_FACE_SIZE) {
@@ -84,6 +83,14 @@ exports.handler = (event, _, callback) => {
       return faces[0]
     })
     .then(face => {
+      // :: enrich the data
+      face.s3 = s3
+      face.score = calculateScore(face)
+
+      return face
+    })
+    .then(face => {
+      logger.debug(`:: [get-photo-score] Processing finished.`)
       logger.debug(JSON.stringify(face))
 
       callback(null, {

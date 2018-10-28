@@ -1,3 +1,5 @@
+const ENV = require('../utils/env')
+
 /**
  * Calculates the proportional size of a bounded face in an image,
  * as bounded by the Rekognition service.
@@ -19,4 +21,23 @@ exports.sortFaces = (faces) => {
     // :: descending order
     return -(exports.getFaceSize(a) - exports.getFaceSize(b))
   })
+}
+
+/**
+ * Calculates the equivalent score of a given mugshot.
+ *
+ * @param {object} face - A FaceDetail object, as returned by the Rekognition service.
+ */
+exports.calculateScore = (face) => {
+  const { Emotions } = face
+  const emoScore = Emotions.reduce((a, emotion) => {
+    const value = emotion.Confidence
+    const multiplier = ENV[`SCORE_${emotion.Type}_MULTIPLIER`]
+
+    return a + (value * multiplier)
+  }, 0)
+
+  // :: ---
+
+  return emoScore
 }
