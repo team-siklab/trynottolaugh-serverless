@@ -64,10 +64,8 @@ exports.reduceRecord = (face) => {
     PlayerId: playerid,
     Timestamp: timestamp,
     Score: score,
-    S3: {
-      Bucket: s3.bucket.name,
-      Key: s3.object.key
-    }
+    Bucket: s3.bucket.name,
+    Key: s3.object.key
   }
 
   logger.debug(':: Payload created.')
