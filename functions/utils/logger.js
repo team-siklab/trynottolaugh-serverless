@@ -1,7 +1,7 @@
 const { createLogger, transports, format } = require('winston')
-const WinstonCloudWatch = require('winston-cloudwatch')
+// const WinstonCloudWatch = require('winston-cloudwatch')
 
-const { APPNAME, NODE_ENV } = require('./env')
+// const { APPNAME, NODE_ENV } = require('./env')
 
 // :: ---
 
