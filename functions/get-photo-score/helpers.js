@@ -5,7 +5,7 @@
  * @param {object} face - A face object, as specified by the Rekognition service.
  */
 exports.getFaceSize = ({ BoundingBox }) => {
-  return BoundingBox.width * BoundingBox.height
+  return BoundingBox.Width * BoundingBox.Height
 }
 
 /**

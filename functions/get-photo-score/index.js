@@ -2,7 +2,9 @@ require('../utils/aws-init')
 
 const logger = require('../utils/logger.js')
 const { getSentiment } = require('../utils/rekog')
-const { sortFaces } = require('./helpers')
+const { getFaceSize, sortFaces } = require('./helpers')
+
+const { REKOG_MINIMUM_FACE_SIZE } = require('../utils/env')
 
 // :: ---
 
@@ -52,6 +54,7 @@ const MAXIMUM_SCORE_FACE = {
 //
 exports.handler = (event, _, callback) => {
   logger.start('get-photo-score')
+  logger.debug(`:: [get-photo-score] Face size threshold is ${REKOG_MINIMUM_FACE_SIZE}.`)
 
   const { s3 } = event.Records[0]
   logger.debug(`:: [get-photo-score] S3 object key is "${s3.object.key}".`)
@@ -63,7 +66,22 @@ exports.handler = (event, _, callback) => {
 
       // :: we only want one face, ideally the biggest
       //    if we can't find a face, then we put one with maximum score values as penalty
-      return faces.length ? faces[0] : MAXIMUM_SCORE_FACE
+      if (faces.length <= 0) {
+        logger.info(':: [get-photo-score] No face found --- using default face.')
+        return MAXIMUM_SCORE_FACE
+      }
+
+      const facesize = getFaceSize(faces[0])
+
+      logger.debug(`:: [get-photo-score] Face size is ${facesize}.`)
+
+      if (facesize <= REKOG_MINIMUM_FACE_SIZE) {
+        logger.info(':: [get-photo-score] Face is not big enough --- using default face.')
+        return MAXIMUM_SCORE_FACE
+      }
+
+      // :: else
+      return faces[0]
     })
     .then(face => {
       logger.debug(JSON.stringify(face))
