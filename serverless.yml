@@ -59,6 +59,18 @@ functions:
           method: POST
           cors: true
 
+  startGame:
+    handler: functions/start-game/index.handler
+    events:
+      - http:
+          path: games/{gameid}/start
+          method: POST
+          cors: true
+          request:
+            parameters:
+              paths:
+                gameid: true
+
 package:
   individually: true
   exclude:
