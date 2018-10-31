@@ -21,6 +21,8 @@ provider:
     SCORE_ANGRY_MULTIPLIER: 0.4
     SCORE_CONFUSED_MULTIPLIER: 0.1
 
+    DDB_GAMES:
+      Ref: GamesTable
     DDB_PLAYERS:
       Ref: PlayersTable
     DDB_PHOTOSCORES:
@@ -48,6 +50,14 @@ functions:
       - s3:
           bucket: ${self:custom.appshortname}-photobucket
           event: s3:ObjectCreated:*
+
+  createGame:
+    handler: functions/create-game/index.handler
+    events:
+      - http:
+          path: games/create
+          method: POST
+          cors: true
 
 package:
   individually: true

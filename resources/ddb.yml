@@ -48,6 +48,47 @@ Resources:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
 
+  GamesTable:
+    Type: AWS::DynamoDB::Table
+    Description: Games history and state
+    Properties:
+      TableName: ${self:custom.appshortname}-games-table
+      AttributeDefinitions:
+        - AttributeName: GameId
+          AttributeType: S
+        - AttributeName: Status
+          AttributeType: S
+        # - AttributeName: StartTimestamp
+        #   AttributeType: S
+        # - AttributeName: EndTimestamp
+        #   AttributeType: S
+
+      KeySchema:
+        - AttributeName: GameId
+          KeyType: HASH
+        # - AttributeName: StartTimestamp
+        #   KeyType: RANGE
+
+      GlobalSecondaryIndexes:
+        - IndexName: ByStatus
+          KeySchema:
+            - AttributeName: Status
+              KeyType: HASH
+            # - AttributeName: StartTimestamp
+            #   KeyType: RANGE
+          Projection:
+            ProjectionType: INCLUDE
+            NonKeyAttributes:
+              - GameId
+              - EndTimestamp
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
 Outputs:
   PlayersTableName:
     Description: The name of the Players DynamoDB Table

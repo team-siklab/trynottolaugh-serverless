@@ -12,6 +12,7 @@ exports.SCORE_ANGRY_MULTIPLIER = +process.env.SCORE_ANGRY_MULTIPLIER
 exports.SCORE_CONFUSED_MULTIPLIER = +process.env.SCORE_CONFUSED_MULTIPLIER
 
 // :: DynamoDB resources
+exports.DDB_GAMES = process.env.DDB_GAMES
 exports.DDB_PLAYERS = process.env.DDB_PLAYERS
 exports.DDB_PHOTOSCORES = process.env.DDB_PHOTOSCORES
 

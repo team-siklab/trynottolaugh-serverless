@@ -108,6 +108,8 @@ exports.handler = (event, _, callback) => {
     })
     .catch(err => {
       logger.error(`:: [get-photo-score] Error encountered while trying to get sentiment from Rekognition.`)
+      logger.debug(JSON.stringify(err))
+
       callback(err)
     })
 }
