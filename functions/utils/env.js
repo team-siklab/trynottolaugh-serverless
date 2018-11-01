@@ -19,3 +19,4 @@ exports.DDB_PHOTOSCORES = process.env.DDB_PHOTOSCORES
 // :: Rekognition resources
 exports.REKOG_MATCH_THRESHOLD = +process.env.REKOG_MATCH_THRESHOLD || 70
 exports.REKOG_MINIMUM_FACE_SIZE = +process.env.REKOG_MINIMUM_FACE_SIZE || 0.25
+exports.REKOG_FACE_COLLECTION = process.env.REKOG_FACE_COLLECTION
