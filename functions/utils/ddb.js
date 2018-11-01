@@ -139,6 +139,48 @@ exports.endGame = (gameid, timestamp) => {
 }
 
 /**
+ * Cancels a game that has not started.
+ */
+exports.cancelGame = (gameid) => {
+  logger.debug(':: Attempting to cancel game ...')
+
+  // :: TODO check if game exists
+  // :: TODO check if game has not yet started
+
+  const keymap = { GameId: gameid }
+  const updatemap = {
+    ':status': GAME_STATES.CANCELLED
+  }
+
+  const ddbpayload = {
+    TableName: DDB_GAMES,
+    Key: wrap(keymap),
+    ExpressionAttributeNames: {
+      '#Status': 'Status'
+    },
+    ExpressionAttributeValues: wrap(updatemap),
+    UpdateExpression: 'SET #Status = :status',
+    ReturnValues: 'ALL_NEW'
+  }
+
+  return new Promise((resolve, reject) => {
+    ddb.updateItem(ddbpayload, (err, data) => {
+      if (err) {
+        logger.error(':: Error encountered while cancelling game.')
+        logger.debug(JSON.stringify(err))
+        return reject(err)
+      }
+
+      // :: ---
+      logger.debug(`:: Game ended: ${gameid}`)
+      logger.info(data)
+
+      return resolve({ gameid })
+    })
+  })
+}
+
+/**
  * Persists a score payload to the score DynamoDB table.
  *
  * @param {object} payload - Score payload.

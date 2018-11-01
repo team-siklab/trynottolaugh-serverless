@@ -83,6 +83,18 @@ functions:
               paths:
                 gameid: true
 
+  cancelGame:
+    handler: functions/cancel-game/index.handler
+    events:
+      - http:
+          path: games/{gameid}/cancel
+          method: POST
+          cors: true
+          request:
+            parameters:
+              paths:
+                gameid: true
+
 package:
   individually: true
   exclude:
