@@ -29,6 +29,10 @@ provider:
       Ref: PhotoScoresTable
 
     REKOG_MINIMUM_FACE_SIZE: 0.25
+    REKOG_FACE_COLLECTION: tntlc-${self:provider.stage}-collection
+
+    S3_PLAYERPHOTO_RAW: ${self:custom.s3-playerphotos-raw}
+    S3_GAMEPHOTOS: ${self:custom.s3-gamephotos}
 
   iamRoleStatements:
     - Effect: Allow
@@ -43,12 +47,22 @@ custom:
   appname: try-not-to-laugh-challenge
   appshortname: tntlc-${self:provider.stage}
 
+  s3-gamephotos: ${self:custom.appshortname}-photobucket
+  s3-playerphotos-raw: ${self:custom.appshortname}-playerraw
+
 functions:
   getPhotoScore:
     handler: functions/get-photo-score/index.handler
     events:
       - s3:
-          bucket: ${self:custom.appshortname}-photobucket
+          bucket: ${self:custom.s3-gamephotos}
+          event: s3:ObjectCreated:*
+
+  identifyPlayer:
+    handler: functions/identify-player/index.handler
+    events:
+      - s3:
+          bucket: ${self:custom.s3-playerphotos-raw}
           event: s3:ObjectCreated:*
 
   createGame:
