@@ -95,6 +95,18 @@ functions:
               paths:
                 gameid: true
 
+  registerPlayer:
+    handler: functions/register-players-to-game/index.handler
+    events:
+      - http:
+          path: games/{gameid}/players/register
+          method: POST
+          cors: true
+          request:
+            parameters:
+              paths:
+                gameid: true
+
 package:
   individually: true
   exclude:
