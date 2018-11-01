@@ -36,7 +36,7 @@ exports.handler = (event, context, callback) => {
     })
     .catch(err => {
       // :: TODO filter based on error type
-      logger.error(`:: [create-game] Error encountered while attempting to start game.`)
+      logger.error(`:: [start-game] Error encountered while attempting to start game.`)
       logger.debug(JSON.stringify(err))
 
       callback(err)

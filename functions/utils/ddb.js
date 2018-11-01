@@ -96,6 +96,48 @@ exports.startGame = (gameid, timestamp) => {
   })
 }
 
+exports.endGame = (gameid, timestamp) => {
+  logger.debug(':: Attempting to end game ...')
+
+  // :: TODO check if game exists
+  // :: TODO check if game is ongoing
+  // :: TODO check if end timestamp is after start timestamp
+
+  const keymap = { GameId: gameid }
+  const updatemap = {
+    ':status': GAME_STATES.COMPLETED,
+    ':endtimestamp': timestamp
+  }
+
+  const ddbpayload = {
+    TableName: DDB_GAMES,
+    Key: wrap(keymap),
+    ExpressionAttributeNames: {
+      '#Status': 'Status',
+      '#EndTimestamp': 'EndTimestamp'
+    },
+    ExpressionAttributeValues: wrap(updatemap),
+    UpdateExpress: 'SET #Status = :status, #EndTimestamp = :endtimestamp',
+    ReturnValues: 'ALL_NEW'
+  }
+
+  return new Promise((resolve, reject) => {
+    ddb.updateItem(ddbpayload, (err, data) => {
+      if (err) {
+        logger.error(':: Error encountered while starting game.')
+        logger.debug(JSON.stringify(err))
+        return reject(err)
+      }
+
+      // :: ---
+      logger.debug(`:: Game ended: ${gameid}`)
+      logger.info(data)
+
+      return resolve({ gameid })
+    })
+  })
+}
+
 /**
  * Persists a score payload to the score DynamoDB table.
  *
