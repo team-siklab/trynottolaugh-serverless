@@ -22,6 +22,9 @@ module.exports = {
   performance: {
     hints: false
   },
+  externals: [
+    { 'aws-sdk': 'commonjs aws-sdk' }
+  ],
   // externals: [externs(externsOptions)],
   module: {
     rules: [
