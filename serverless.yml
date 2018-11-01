@@ -71,6 +71,18 @@ functions:
               paths:
                 gameid: true
 
+  endGame:
+    handler: functions/end-game/index.handler
+    events:
+      - http:
+          path: games/{gameid}/end
+          method: POST
+          cors: true
+          request:
+            parameters:
+              paths:
+                gameid: true
+
 package:
   individually: true
   exclude:

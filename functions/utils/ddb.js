@@ -117,7 +117,7 @@ exports.endGame = (gameid, timestamp) => {
       '#EndTimestamp': 'EndTimestamp'
     },
     ExpressionAttributeValues: wrap(updatemap),
-    UpdateExpress: 'SET #Status = :status, #EndTimestamp = :endtimestamp',
+    UpdateExpression: 'SET #Status = :status, #EndTimestamp = :endtimestamp',
     ReturnValues: 'ALL_NEW'
   }
 

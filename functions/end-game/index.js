@@ -2,6 +2,7 @@ require('../utils/aws-init')
 
 const logger = require('../utils/logger.js')
 const { assert } = require('../utils/assert')
+const { endGame } = require('../utils/ddb')
 const { CORS_HEADERS } = require('../utils/enums')
 
 // :: ---
@@ -22,9 +23,22 @@ exports.handler = (event, context, callback) => {
 
   // :: ---
 
-  // :: TODO
-  callback(null, {
-    statusCode: 200,
-    headers: { ...CORS_HEADERS }
-  })
+  endGame(gameid, timestamp)
+    .then(data => {
+      logger.debug(`:: [end-game] Game ended: ${gameid}.`)
+
+      // :: TODO
+      callback(null, {
+        statusCode: 200,
+        body: JSON.stringify(data),
+        headers: { ...CORS_HEADERS }
+      })
+    })
+    .catch(err => {
+      // :: TODO filter based on error type
+      logger.error(`:: [end-game] Error encountered while attempting to end game.`)
+      logger.debug(JSON.stringify(err))
+
+      callback(err)
+    })
 }
