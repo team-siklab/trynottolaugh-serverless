@@ -2,6 +2,7 @@ require('../utils/aws-init')
 
 const logger = require('../utils/logger.js')
 const { createGame } = require('../utils/ddb')
+const { CORS_HEADERS } = require('../utils/enums')
 
 // :: ---
 
@@ -17,10 +18,7 @@ exports.handler = (event, _, callback) => {
       callback(null, {
         statusCode: 200,
         body: JSON.stringify({ gameid }),
-        headers: {
-          'Access-Control-Allow-Origins': '*',
-          'Access-Control-Allow-Credentials': true
-        }
+        headers: { ...CORS_HEADERS }
       })
     })
     .catch(err => {

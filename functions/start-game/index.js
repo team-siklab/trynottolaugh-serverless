@@ -1,7 +1,9 @@
 require('../utils/aws-init')
 
 const logger = require('../utils/logger.js')
+const { assert } = require('../utils/assert')
 const { startGame } = require('../utils/ddb')
+const { CORS_HEADERS } = require('../utils/enums')
 
 // :: ---
 
@@ -12,6 +14,15 @@ exports.handler = (event, context, callback) => {
   const { gameid } = event.pathParameters
   const { timestamp } = JSON.parse(event.body || {})
 
+  // :: failsafes
+  const isSafe =
+    assert(gameid, 'No Game Id specified.', callback) &&
+    assert(timestamp, 'No start timestamp specified.', callback)
+
+  if (!isSafe) return
+
+  // :: ---
+
   startGame(gameid, timestamp)
     .then(data => {
       logger.debug(`:: [start-game] Game started: ${gameid}.`)
@@ -20,10 +31,7 @@ exports.handler = (event, context, callback) => {
       callback(null, {
         statusCode: 200,
         body: JSON.stringify(data),
-        headers: {
-          'Access-Control-Allow-Origins': '*',
-          'Access-Control-Allow-Credentials': true
-        }
+        headers: { ...CORS_HEADERS }
       })
     })
     .catch(err => {
@@ -33,14 +41,4 @@ exports.handler = (event, context, callback) => {
 
       callback(err)
     })
-
-  // :: TODO
-  callback(null, {
-    statusCode: 200,
-    body: JSON.stringify({}),
-    headers: {
-      // :: TODO determine if this is actually required
-      'Access-Control-Allow-Origins': '*'
-    }
-  })
 }

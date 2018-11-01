@@ -4,3 +4,8 @@ exports.GAME_STATES = {
   CANCELLED: 'CANCELLED',
   COMPLETED: 'COMPLETED'
 }
+
+exports.CORS_HEADERS = {
+  'Access-Control-Allow-Origins': '*',
+  'Access-Control-Allow-Credentials': true
+}
